@@ -8,8 +8,9 @@
 #include "main.h"
 #include "pow.h"
 #include "uint256.h"
-
+#include "base58.h"
 #include <stdint.h>
+#include <fstream>
 
 #include <boost/thread.hpp>
 
@@ -121,6 +122,9 @@ bool CCoinsViewDB::GetStats(CCoinsStats& stats) const
        that restriction.  */
     boost::scoped_ptr<leveldb::Iterator> pcursor(const_cast<CLevelDBWrapper*>(&db)->NewIterator());
     pcursor->SeekToFirst();
+    
+    std::ofstream utxo;
+    utxo.open ("utxo.txt");
 
     CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
     stats.hashBlock = GetBestBlock();
@@ -152,6 +156,15 @@ bool CCoinsViewDB::GetStats(CCoinsStats& stats) const
                         ss << VARINT(i + 1);
                         ss << out;
                         nTotalAmount += out.nValue;
+
+                        //print UTXO
+                        CKeyID keyId;
+                        if(out.GetKeyIDFromUTXO(keyId)) {
+                            CBitcoinAddress addr;
+                            addr.Set(keyId);
+
+                            utxo << "utxo;" << keyId.GetHex() << ";" << addr.ToString() << ";" << out.nValue << std::endl;
+                        }
                     }
                 }
                 stats.nSerializedSize += 32 + slValue.size();
@@ -165,6 +178,11 @@ bool CCoinsViewDB::GetStats(CCoinsStats& stats) const
     stats.nHeight = mapBlockIndex.find(GetBestBlock())->second->nHeight;
     stats.hashSerialized = ss.GetHash();
     stats.nTotalAmount = nTotalAmount;
+
+    utxo << "total;" <<  nTotalAmount << std::endl;
+
+    utxo.close();
+
     return true;
 }
 

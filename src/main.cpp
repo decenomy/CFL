@@ -3180,6 +3180,14 @@ bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, bool f
 	if (fCheckPOW && !CheckProofOfWork(block.GetHash(), block.nBits))
 		return state.DoS(50, error("CheckBlockHeader() : proof of work failed"),
 			REJECT_INVALID, "high-hash");
+    
+	// Check freeze point
+    if (block.GetBlockTime() > 1615852800) // Tue Mar 16 2021 00:00:00 GMT+0000
+    {
+        LogPrintf("Block time = %d , GetAdjustedTime = %d \n", block.GetBlockTime(), GetAdjustedTime());
+        return state.Invalid(error("%s : this is the end", __func__),
+                             REJECT_INVALID, "time-end");
+    }
 
 	return true;
 }
@@ -3379,6 +3387,14 @@ bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& sta
 		return state.Invalid(error("%s : block's timestamp is too early", __func__),
 			REJECT_INVALID, "time-too-old");
 	}
+    
+	// Check freeze point
+    if (block.GetBlockTime() > 1615852800) // Tue Mar 16 2021 00:00:00 GMT+0000
+    {
+        LogPrintf("Block time = %d , GetAdjustedTime = %d \n", block.GetBlockTime(), GetAdjustedTime());
+        return state.Invalid(error("%s : this is the end", __func__),
+                             REJECT_INVALID, "time-end");
+    }
 
 	// Check that the block chain matches the known block chain up to a checkpoint
 	if (!Checkpoints::CheckBlock(nHeight, hash))
