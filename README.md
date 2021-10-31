@@ -1,4 +1,4 @@
-CryptoFlow wallet repository
+CryptoFlow wallet repository 
 =====================================
 
 ### Coin Specs
