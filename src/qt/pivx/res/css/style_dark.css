@@ -788,10 +788,10 @@ QPushButton[cssClass="btn-check-lock-sub-menu-unlocked"] {
     background-image: url("://ic-submenu-unlock");
     background-position:left center;
     background-repeat:no-repeat;
-    background-color: transparent;
+    background-color: #262626;
     text-align: left;
     padding-left: 30px;
-    color:#fff;
+    color:#ffffff;
     border-bottom:0px;
     border-radius:0px;
 }
@@ -801,17 +801,17 @@ QPushButton[cssClass="btn-check-lock-sub-menu-unlocked"]:checked {
 }
 
 QPushButton[cssClass="btn-check-lock-sub-menu-unlocked"]:hover {
-    color:#fff;
+    color:#ffffff;
 }
 
 QPushButton[cssClass="btn-check-lock-sub-menu-locked"] {
     background-image: url("://ic-submenu-lock");
     background-position:left center;
     background-repeat:no-repeat;
-    background-color: transparent;
+    background-color: #262626;
     text-align: left;
     padding-left: 30px;
-    color:#fff;
+    color:#ffffff;
     border-bottom:0px;
     border-radius:0px;
 }
@@ -821,11 +821,11 @@ QPushButton[cssClass="btn-check-lock-sub-menu-locked"]:checked {
 }
 
 QPushButton[cssClass="btn-check-lock-sub-menu-locked"]:hover {
-    color:#fff;
+    color:#ffffff;
 }
 
 QPushButton[cssClass="btn-check-lock-sub-menu-locked"]:checked:hover {
-  background-color: rgba(129, 8, 144, 0.7);
+  background-color: #f4b400;
   color: #ffffff;
 }
 
@@ -833,7 +833,7 @@ QPushButton[cssClass="btn-check-lock-sub-menu-staking"] {
     background-image: url("://ic-submenu-staking");
     background-position:left center;
     background-repeat:no-repeat;
-    background-color: transparent;
+    background-color: #262626;
     text-align: left;
     padding-left: 30px;
     color:#fff;
@@ -850,7 +850,7 @@ QPushButton[cssClass="btn-check-lock-sub-menu-staking"]:hover {
 }
 
 QPushButton[cssClass="btn-check-lock-sub-menu-staking"]:checked:hover {
-  background-color: rgba(129, 8, 144, 0.7);
+  background-color: #262626;
   color: #ffffff;
 }
 
@@ -2066,10 +2066,10 @@ HH        RECEIVE
 HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH*/
 
 *[cssClass="label-address-box"] {
-    color:#ffffff;
-    background-color: #969696;
-    font-size:22px;
-    padding:10px 10px;
+  color: #ffffff;
+  background-color: #969696;
+  font-size: 20px;
+  padding: 10px 10px;
 }
 
 /*HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
@@ -3214,8 +3214,8 @@ HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
  */
 
 *[cssClass="text-intro-white"] {
-    color: #eeeeee;
-    font-size:16px;
+  color: #eeeeee;
+  font-size: 14px;
 }
 
 QPushButton[cssClass="btn-dots-welcome"] {
@@ -3246,13 +3246,13 @@ QPushButton[cssClass="btn-dots-welcome"]:pressed {
 }
 
 *[cssClass="edit-primary-welcome"] {
-    border:1px solid #f4b400;
-    border-right: 0px;
-    background-color: #262626;
-    font-size:18px;
-    border-radius: 2px;
-    padding:8px;
-    color: #eeeeee;
+  border: 1px solid #f4b400;
+  border-right: 0px;
+  background-color: #262626;
+  font-size: 18px;
+  border-radius: 2px;
+  padding: 4px;
+  color: #eeeeee;
 }
 
 *[cssClass="edit-primary-welcome"]:focus {
@@ -3271,34 +3271,34 @@ QPushButton[cssClass="btn-dots-welcome"]:pressed {
 }
 
 *[cssClass="edit-primary-welcome-disabled"] {
-    border:1px solid rgb(73, 73, 73);
-    border-right: 0px;
-    background-color:#252525;
-    font-size:18px;
-    border-radius: 2px;
-    padding:8px;
-    color: rgb(109, 109, 109);
+  border: 1px solid rgb(73, 73, 73);
+  border-right: 0px;
+  background-color: #252525;
+  font-size: 18px;
+  border-radius: 2px;
+  padding: 4px;
+  color: rgb(109, 109, 109);
 }
 
 QRadioButton[cssClass="radio-welcome"]:checked {
-    color: #f4b400;
-    font-size:20px;
+  color: #f4b400;
+  font-size: 18px;
 }
 
 QRadioButton[cssClass="radio-welcome"]:unchecked {
   color: #bababa;
-  font-size: 20px;
+  font-size: 18px;
 }
 
 QRadioButton[cssClass="radio-welcome"] {
   color: #bababa;
-  font-size: 20px;
-  spacing: 20px;
+  font-size: 18px;
+  spacing: 18px;
 }
 
 QRadioButton[cssClass="radio-welcome"]::indicator {
-    width: 26px;
-    height: 26px;
+  width: 25px;
+  height: 25px;
 }
 
 QRadioButton[cssClass="radio-welcome"]::indicator:checked {
