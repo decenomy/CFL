@@ -71,14 +71,23 @@ static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits
 static Checkpoints::MapCheckpoints mapCheckpoints =
     boost::assign::map_list_of
     (0, uint256S("000004024ce90ca90b3d840e8561944882d31a35ee9700fdc4a4187f0e25bcb3"))
+    (189823, uint256S("f441bb0133712fdbc4bb9fc2d86cda41546f62f3c2ba92e2d57a74146aa88bd2"))
+    (379647, uint256S("1e4ad30cbbbcd6a355dbef37fecd17356db6780ead871b882181c2ec5998cd6d"))
+    (569471, uint256S("52a4589015f764083dd2515588e2c0fdfc6ea342d97625f5b83d6871632ff782"))
+    (759295, uint256S("a44c348003a0dd5fbdb90cbdc2e066ec8be0e2c6acf9b413f798b91a1ccca91c"))
+    (949119, uint256S("61ff43474cc8ce5a820f9e01c0287f813db7a99758f55555c7f74fa1a5a303ab"))
+    (1138943, uint256S("7bc32ec84a3a024ab036623c9a9f46ee7f71e2a10745f78cd7cdf42fb609d86e"))
+    (1328767, uint256S("ac7ddc433b35176a72cecc7c4173df0a33d8370273105a235e6512bdc5a89b65"))
+    (1518591, uint256S("ba28487995204639472ddaf4382aae5e6cd2adb3ac02d0a123b87adb5c7e6955"))
+    (1708415, uint256S("4c076ad9d17c48a286849d665549fec8e194602a25d914ca939f2e0d65103b70"))
 ;
 
 static const Checkpoints::CCheckpointData data = {
     &mapCheckpoints,
-    1615902863, // * UNIX timestamp of last checkpoint block
-    1,     // * total number of transactions between genesis and last checkpoint
+    1720906200, // * UNIX timestamp of last checkpoint block
+    3606821,    // * total number of transactions between genesis and last checkpoint
                 //   (the tx=... number in the UpdateTip debug.log lines)
-    2880        // * estimated number of transactions per day after checkpoint
+    2832        // * estimated number of transactions per day after checkpoint
 };
 
 static Checkpoints::MapCheckpoints mapCheckpointsTestnet =
