@@ -12,6 +12,7 @@
 #include "masternode-sync.h"
 #include "masternodeman.h"
 #include "netbase.h"
+#include "rewards.h"
 #include "spork.h"
 #include "sync.h"
 #include "util.h"
@@ -188,17 +189,11 @@ void CMasternode::Check(bool forceCheck)
 {
     if (ShutdownRequested()) return;
 
-    const Consensus::Params& consensus = Params().GetConsensus();
-
-    // todo: add LOCK(cs) but be careful with the AcceptableInputs() below that requires cs_main.
-
-    if (!forceCheck && (GetTime() - lastTimeChecked < MASTERNODE_CHECK_SECONDS)) return;
-    lastTimeChecked = GetTime();
-
-
     //once spent, stop doing the checks
     if (activeState == MASTERNODE_VIN_SPENT) return;
 
+    if (!forceCheck && (GetTime() - lastTimeChecked < MASTERNODE_CHECK_SECONDS)) return;
+    lastTimeChecked = GetTime();
 
     if (!IsPingedWithin(MASTERNODE_REMOVAL_SECONDS)) {
         activeState = MASTERNODE_REMOVE;
@@ -215,7 +210,10 @@ void CMasternode::Check(bool forceCheck)
         return;
     }
 
-    if (!unitTest && lastTimeChecked - lastTimeCollateralChecked > MINUTE_IN_SECONDS) {
+    if (!unitTest && 
+        forceCheck && 
+        lastTimeChecked - lastTimeCollateralChecked > MINUTE_IN_SECONDS
+    ) {
         lastTimeCollateralChecked = lastTimeChecked;
         CValidationState state;
         CMutableTransaction tx = CMutableTransaction();
@@ -233,6 +231,8 @@ void CMasternode::Check(bool forceCheck)
                 return;
             }
         }
+
+        const auto& consensus = Params().GetConsensus();
 
         // ----------- burn address scanning -----------
         if (!consensus.mBurnAddresses.empty()) {
@@ -382,26 +382,10 @@ CAmount CMasternode::GetMasternodeNodeCollateral(int nHeight)
     return 0;
 }
 
-CAmount CMasternode::GetBlockValue(int nHeight)
-{
-    if (nHeight > 700000) return       600 * COIN; // Approximately Old blockchain after block 2000000 - Approximately 50% increase in the rewards
-    if (nHeight > 600000) return       680 * COIN; // Approximately Old blockchain after block 1900000 - Approximately 50% increase in the rewards
-    if (nHeight > 500000) return       760 * COIN; // Approximately Old blockchain after block 1800000 - Approximately 50% increase in the rewards
-    if (nHeight > 400000) return       860 * COIN; // Approximately Old blockchain after block 1700000 - Approximately 50% increase in the rewards
-    if (nHeight > 300000) return       900 * COIN; // Approximately Old blockchain after block 1600000 - Approximately 50% increase in the rewards
-    if (nHeight > 190000) return      1000 * COIN; // Fork block - Approximately 50% increase in the rewards
-    if (nHeight > 156455) return       650 * COIN; // Old blockchain after block 1500000
-    if (nHeight >  56455) return       700 * COIN; // Old blockchain after block 1400000
-    if (nHeight >      1) return       300 * COIN; // Old blockchain after block 2000000
-    if (nHeight >      0) return 610000000 * COIN; //! Premine for sending coins to the coin holders. Final circulating supply is 607,146,002.03072373 CFL so we will emit 610M.
-
-    return 0;
-}
-
 CAmount CMasternode::GetMasternodePayment(int nHeight)
 {
-    if (nHeight > 190000) return GetBlockValue(nHeight) * 65 / 100; // Fork block - Approximately 50% increase in the rewards
-    if (nHeight >   2880) return GetBlockValue(nHeight) * 90 / 100;
+    if (nHeight > 190000) return CRewards::GetBlockValue(nHeight) * 65 / 100; // Fork block - Approximately 50% increase in the rewards
+    if (nHeight >   2880) return CRewards::GetBlockValue(nHeight) * 90 / 100;
 
     return 0;
 }
@@ -699,7 +683,7 @@ bool CMasternodeBroadcast::CheckAndUpdate(int& nDos)
         //take the newest entry
         LogPrint(BCLog::MASTERNODE, "mnb - Got updated entry for %s\n", vin.prevout.ToStringShort());
         if (pmn->UpdateFromNewBroadcast((*this))) {
-            pmn->Check();
+            pmn->Check(true);
             if (pmn->IsEnabled()) Relay();
         }
         masternodeSync.AddedMasternodeList(GetHash());

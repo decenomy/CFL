@@ -265,18 +265,26 @@ void CMasternodeMan::AskForMN(CNode* pnode, const CTxIn& vin)
     mWeAskedForMasternodeListEntry[vin.prevout] = askAgain;
 }
 
-void CMasternodeMan::Check()
+void CMasternodeMan::Check(bool forceCheck)
 {
-    LOCK2(cs_main, cs);
+    if(forceCheck) {
+        LOCK2(cs_main, cs);
 
-    for (auto mn : vMasternodes) {
-        mn->Check();
+        for (auto mn : vMasternodes) {
+            mn->Check(forceCheck);
+        }
+    } else {
+        LOCK(cs);
+
+        for (auto mn : vMasternodes) {
+            mn->Check();
+        }
     }
 }
 
 void CMasternodeMan::CheckAndRemove(bool forceExpiredRemoval)
 {
-    Check();
+    Check(true);
 
     LOCK(cs);
 
@@ -442,7 +450,7 @@ int CMasternodeMan::CountEnabled()
 {
     int i = 0;
 
-    LOCK2(cs_main, cs);
+    LOCK(cs);
 
     for (auto mn : vMasternodes) {
         mn->Check();
@@ -455,7 +463,7 @@ int CMasternodeMan::CountEnabled()
 
 void CMasternodeMan::CountNetworks(int& ipv4, int& ipv6, int& onion)
 {
-    LOCK2(cs_main, cs);
+    LOCK(cs);
 
     for (auto mn : vMasternodes) {
         mn->Check();
@@ -560,7 +568,7 @@ CMasternode* CMasternodeMan::GetNextMasternodeInQueueForPayment(int nBlockHeight
     vEligibleTxIns.clear();
     int nMnCount = 0;
     {
-        LOCK2(cs_main, cs);
+        LOCK(cs);
 
         nMnCount = CountEnabled();
         for (auto mn : vMasternodes) {
@@ -655,7 +663,7 @@ CMasternode* CMasternodeMan::GetCurrentMasterNode(int mod, int64_t nBlockHeight)
     int64_t score = 0;
     CMasternode* winner = NULL;
 
-    LOCK2(cs_main, cs);
+    LOCK(cs);
 
     // scan for winner
     for (auto mn : vMasternodes) {
@@ -691,7 +699,7 @@ int CMasternodeMan::GetMasternodeRank(const CTxIn& vin, int64_t nBlockHeight)
     uint256 hash;
     if (!GetBlockHash(hash, nBlockHeight)) return defaultValue;
 
-    LOCK2(cs_main, cs);
+    LOCK(cs);
 
     // scan for winner
     for (auto mn : vMasternodes) {
@@ -1001,10 +1009,7 @@ void ThreadCheckMasternodes()
             MilliSleep(1000);
             boost::this_thread::interruption_point();
             // try to sync from all available nodes, one step at a time
-            {
-                LOCK(cs_main);
-                masternodeSync.Process();
-            }
+            masternodeSync.Process();
 
             if (masternodeSync.IsBlockchainSynced()) {
                 c++;
