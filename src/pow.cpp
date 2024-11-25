@@ -229,23 +229,25 @@ unsigned int GetNextWorkRequiredPOSV2(const CBlockIndex* pIndexLast)
     return bnNew.GetCompact();
 }
 
-unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader* pblock)
+unsigned int GetNextWorkRequired(const CBlockIndex* pIndexLast, const CBlockHeader* pblock)
 {
     const auto& params = Params();
     const auto& consensus = params.GetConsensus();
-    const auto nHeight = pindexLast->nHeight + 1;
+    // Get the current block height
+    const auto nPrevHeight = pIndexLast->nHeight;
+    const auto nHeight = nPrevHeight + 1;
 
-    if (params.IsRegTestNet()) return pindexLast->nBits;
+    if (params.IsRegTestNet()) return pIndexLast->nBits;
 
     if (consensus.NetworkUpgradeActive(nHeight, Consensus::UPGRADE_POS_V3)) {
-        return GetNextWorkRequiredPOSV2(pindexLast);
+        return GetNextWorkRequiredPOSV2(pIndexLast);
     }
 
-    if (consensus.NetworkUpgradeActive(nHeight, Consensus::UPGRADE_POS)) {
-        return GetNextWorkRequiredPOS(pindexLast);
+    if (consensus.NetworkUpgradeActive(nPrevHeight, Consensus::UPGRADE_POS)) {
+        return GetNextWorkRequiredPOS(pIndexLast);
     }
 
-    return GetNextWorkRequiredPOW(pindexLast);
+    return GetNextWorkRequiredPOW(pIndexLast);
 }
 
 bool CheckProofOfWork(uint256 hash, unsigned int nBits)
@@ -254,18 +256,17 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits)
     bool fOverflow;
     uint256 bnTarget;
 
-    // The old CryptoFlow wallet was broken on this part
-    // if (Params().IsRegTestNet()) return true;
+    if (Params().IsRegTestNet()) return true;
 
-    // bnTarget.SetCompact(nBits, &fNegative, &fOverflow);
+    bnTarget.SetCompact(nBits, &fNegative, &fOverflow);
 
-    // // Check range
-    // if (fNegative || bnTarget.IsNull() || fOverflow || bnTarget > Params().GetConsensus().powLimit)
-    //     return error("CheckProofOfWork() : nBits below minimum work");
+    // Check range
+    if (fNegative || bnTarget.IsNull() || fOverflow || bnTarget > Params().GetConsensus().powLimit)
+        return error("CheckProofOfWork() : nBits below minimum work");
 
-    // // Check proof of work matches claimed amount
-    // if (hash > bnTarget)
-    //     return error("CheckProofOfWork() : hash doesn't match nBits");
+    // Check proof of work matches claimed amount
+    if (hash > bnTarget)
+        return error("CheckProofOfWork() : hash doesn't match nBits");
 
     return true;
 }
