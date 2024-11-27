@@ -28,8 +28,8 @@ fi
 
 # Sets variables needed for the build
 TICKER=${TICKER:-"${GITHUB_REPO}"}
-UI_NAME=${UI_NAME:-"__Decenomy__"}
-BASE_NAME=${BASE_NAME:-"__decenomy__"}
+UI_NAME=${UI_NAME:-"CryptoFlow"}
+BASE_NAME=${BASE_NAME:-"cryptoflow"}
 
 # Sets the build environment variable
 #   0: The build will use the builder image available on docker hub
