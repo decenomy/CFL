@@ -1112,7 +1112,8 @@ void RPCConsole::setroi(CBlockchainStatus& cbs)
 void RPCConsole::setchainmasternodes(CBlockchainStatus& cbs)
 {
     int ipv4 = 0, ipv6 = 0, onion = 0;
-    int nCount = mnodeman.GetNextMasternodeInQueueCount(cbs.nHeight);
+    const auto tipIndex = WITH_LOCK(cs_main, return chainActive.Tip());
+    int nCount = mnodeman.GetNextMasternodeInQueueCount(tipIndex);
     mnodeman.CountNetworks(ipv4, ipv6, onion);
     int totalmn = mnodeman.size();
     int stablemn = mnodeman.stable_size();
@@ -1161,10 +1162,10 @@ void RPCConsole::setmymasternodes()
     ui->myactivemn->setText(QString::number(nMNCount));
 }
 
-void RPCConsole::setbstamp()
+void RPCConsole::setbstamp(CBlockchainStatus& cbs)
 {
     QDateTime timestamp = QDateTime::currentDateTime();
-    QString timestring = timestamp.toString();
+    QString timestring = timestamp.toString() + "  :  " + QString::number(cbs.nBlocksPerDay) + " blks/day";
     ui->bststamp->setText(timestring);
 }
 
@@ -1194,5 +1195,5 @@ void RPCConsole::updateBlockchainStats()
     setchainmasternodes(cbs);
     setmymasternodes();
     applyColor2Text(ui->bststamp, Qt::black);
-    setbstamp();
+    setbstamp(cbs);
 }

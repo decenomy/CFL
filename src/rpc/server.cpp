@@ -376,8 +376,6 @@ static const CRPCCommand vRPCCommands[] =
         {"cryptoflow", "listmasternodeconf", &listmasternodeconf, true },
         {"cryptoflow", "getactivemasternodecount", &getactivemasternodecount, true },
         {"cryptoflow", "getmasternodestatus", &getmasternodestatus, true },
-        {"cryptoflow", "getmasternodewinners", &getmasternodewinners, true },
-        {"cryptoflow", "getmasternodescores", &getmasternodescores, true },
         {"cryptoflow", "mnsync", &mnsync, true },
         {"cryptoflow", "spork", &spork, true },
         {"cryptoflow", "mnping", &mnping, true },
